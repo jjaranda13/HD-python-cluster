@@ -83,7 +83,7 @@ This distance function compares dimensions between 2 items.
 Each dimension of item1 is searched in item2, and if it is found, then the distance takes into account the difference (mahatan style)
 if the dimension does not exist in item2, a maximum value is added to the total distance between item1 and item2
 
-there is no difference with current usage:
+there is no difference with current usage::
  
  >>>cl = KMeansClustering(users,HDdistItems,HDequals);
 
@@ -94,9 +94,9 @@ The new HDgetClusters() function is linear. Avoid the recalculation of centroids
 whereas original function getClusters() is N*N complex, because recalculate the
 centroid when move an item from one cluster to another. 
 This new function can be used for low and high dimensionality problems, increasing 
-performance in both cases
+performance in both cases::
 
- >>>solution = cl.HDgetclusters(numclusters,max_iterations);
+ >>>solution = cl.HDgetclusters(numclusters,max_iterations)
 
 Other new available optimization inside HDcentroid() function in is the use of mean instead median at centroid calculation.
 median is more accurate but involves more computations when N is huge. 
