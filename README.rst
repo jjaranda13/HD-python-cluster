@@ -60,6 +60,7 @@ The parameter passed to getclusters is the count of clusters generated.
 =======================================================================
 Authors of new added functionalities:
   Garcia Aranda, Jose Javier	jose_javier.garcia_aranda@alcatel-lucent.com
+  
   Ramos Diaz, Juan		juanrd0088@gmail.com
 
 Acknoledgements:
