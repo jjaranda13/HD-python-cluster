@@ -68,8 +68,8 @@ Acknoledgements:
 
 
 High dimensionality (HD) problems are those which have items with high number of dimensions
-There are two types of HD problems:
- a)set of items with large number of dimensions
+There are two types of HD problems::
+ a)set of items with large number of dimensions.
  b)set of items with a limited number of dimensions from a large available number of dimensions
   For example considering dimensions X, Y, Z, K, L, M and the items:
     item1=(X=2, Z=5, L=7)
