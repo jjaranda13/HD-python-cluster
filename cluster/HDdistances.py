@@ -25,9 +25,9 @@ def HDdistItems(profile1,profile2):
     len1=len(profile1)/2
     len2=len(profile2)/2
     total_len=len1+len2 #this value usually is 20
-    factor_len=20/total_len #this only work if the profile has less than 10 keys
+    factor_len=20.0/total_len #this only work if the profile has less than 10 keys
     distance = 0.0
-    marked=[0]*20;
+    marked=[0]*(total_len*2);
     for i in range(len1):
         found=False
         for j in range(len2):
