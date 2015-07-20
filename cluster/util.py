@@ -130,3 +130,38 @@ def centroid(data, method=median):
     for i in range(len(data[0])):
         out.append(method([x[i] for x in data]))
     return tuple(out)
+
+def HDcentroid(data):
+    dict_words={}
+    dict_weight={}
+    words_per_user=10 #10 words per user. This value is not used.
+    num_users_cluster=len(data)# len(data) is the number of users (user=item)
+
+    for i in range (num_users_cluster):
+        words_per_user=len(data[i])/2 #each profile have 10 pairs of keyword, weight
+        for j in range (words_per_user):
+            word=(data[i])[j*2]
+            if (dict_words.has_key(word)) :
+                dict_words[word]+=1
+                dict_weight[word]+=data[i][2*j+1]
+            else :
+                dict_words[word]=1
+                dict_weight[word]=data[i][2*j+1]
+    #l is a ordered list of the keywords, with the sum of the weight of every popular keyword
+    l=dict_words.items()
+    l.sort(key=lambda x:10000000-x[1])
+
+    words_per_centroid=min(10,len(l))
+    
+    out=[0]*words_per_centroid*2
+    centroid_total_weight=0
+    
+    for i in range  (words_per_centroid):
+        tupla=l[i] # word, sum of weights
+        out[i*2]=tupla[0]
+        out[i*2+1]=dict_weight[tupla[0]]/tupla[1]
+        centroid_total_weight+=out[i*2+1]
+    #normalization of the centroid weight
+    for i in range(words_per_centroid):
+        out [i*2+1]=out[i*2+1]/centroid_total_weight
+    return tuple(out)
