@@ -14,9 +14,12 @@
 # along with this library; if not, write to the Free Software Foundation,
 # Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
+# new functions: HDgetCluster() and HDassignItem by:
+#   2015 Jose Javier Garcia Aranda, Juan Ramos Diaz
 
-
-from cluster.util import ClusteringError, centroid, minkowski_distance
+from cluster.util import ClusteringError, centroid, minkowski_distance, HDcentroid
+import time
+import datetime
 
 
 class KMeansClustering(object):
@@ -166,3 +169,103 @@ class KMeansClustering(object):
         for item in input_:
             self.__clusters[count % clustercount].append(item)
             count += 1
+
+
+    def HDgetclusters(self, count,  max_iterations):
+        """
+        Generates *count* clusters.
+
+        :param count: The amount of clusters that should be generated.  count
+            must be greater than ``1``.
+        :raises ClusteringError: if *count* is out of bounds.
+        """
+
+        # only proceed if we got sensible input
+        if count <= 1:
+            raise ClusteringError("When clustering, you need to ask for at "
+                                  "least two clusters! "
+                                  "You asked for %d" % count)
+
+        # return the data straight away if there is nothing to cluster
+        if (self.__data == [] or len(self.__data) == 1 or
+                count == self.__initial_length):
+            return self.__data
+
+        # It makes no sense to ask for more clusters than data-items available
+        if count > self.__initial_length:
+            raise ClusteringError(
+                "Unable to generate more clusters than "
+                "items available. You supplied %d items, and asked for "
+                "%d clusters." % (self.__initial_length, count))
+
+        self.initialise_clusters(self.__data, count)
+
+        items_moved = True  # tells us if any item moved between the clusters,
+                            # as we initialised the clusters, we assume that
+                            # is the case
+
+        iteration=0
+        #asi no, no obligar a hacer iteraciones, lo hago segun dice el algoritmo
+        #pero si llego a iteraciones paro, si termino antes de llegar, mejor
+        while items_moved is True:
+            items_moved = False
+            print "iterating",iteration
+            ts = time.time()
+            st=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+            print st
+            iteration=iteration+1
+
+            #computation of centroids
+            my_centroids={}   # new!!     
+            for cluster in self.__clusters:# new!! 
+                one_centroid=HDcentroid(cluster)# new!!
+                my_centroids[one_centroid]=cluster # new!!
+
+            
+
+
+            #this few lines are new:    
+            #print centroids . it works, for debug purposes only!!
+            #for i in my_centroids.keys():
+            #    print "key:",i # print the centroid!!
+            #    print "value:",my_centroids[i] # print all elements of the cluster!!
+            #print my_centroids.keys()[0] # imprime el primer centroide. es una prueba
+
+            #now we scan the N items without recalculation of centroids. Therefore, it is linear
+            for cluster in self.__clusters:
+                for centroid_aux, cluster_aux in my_centroids.iteritems():
+                    if cluster_aux == cluster:
+                        centroid_cluster=centroid_aux
+                        break;
+                for item in cluster:
+                    res = self.HDassign_item(item, cluster,centroid_cluster,my_centroids)#modified!!
+                    if items_moved is False:
+                        items_moved = res
+
+            if (iteration == max_iterations):
+                items_moved = False          
+        return self.__clusters
+        
+    
+    def HDassign_item(self, item, origin, origin_centroid, my_centroids):
+        """
+        Assigns an item from a given cluster to the closest located cluster.
+
+        :param item: the item to be moved.
+        :param origin: the originating cluster.
+        :param origin_centroid: centroid of the originating cluster
+        :my_centroids: dictionary of centroid,cluster
+        """
+        closest_cluster=origin #my_centroids[closest_centroid]=closest_cluster
+        closest_centroid=origin_centroid
+        #for cluster in self.__clusters:
+        for centro in my_centroids.keys():
+            if self.distance(item, centro) < self.distance(
+                    item, closest_centroid):
+                closest_cluster = my_centroids[centro]
+
+        if id(closest_cluster) != id(origin):
+            self.move_item(item, origin, closest_cluster)
+            return True
+        else:
+            return False
