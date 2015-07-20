@@ -53,3 +53,52 @@ The parameter passed to getclusters is the count of clusters generated.
 .. image:: https://readthedocs.org/projects/python-cluster/badge/?version=latest
     :target: http://python-cluster.readthedocs.org
     :alt: Documentation Status
+
+
+
+2015/07/20 NEW FUNCTIONALITIES FOR HIGH AND LOW DIMENSIONALITY PROBLEMS
+=======================================================================
+Authors of new added functionalities:
+  Garcia Aranda, Jose Javier	jose_javier.garcia_aranda@alcatel-lucent.com
+  Ramos Diaz, Juan		juanrd0088@gmail.com
+
+Acknoledgements:
+  Authors want to thank the Spanish Economy & competitiveness Ministry which funds this research 
+  through "INNPACTO" innovation program IPT-2012-0839-430000.
+
+
+High dimensionality (HD) problems are those which have items with high number of dimensions
+There are two types of HD problems:
+ a)  set of items with large number of dimensions
+ b)  set of items with a limited number of dimensions from a large available number of dimensions
+  For example considering dimensions X, Y, Z, K, L, M and the items:
+    item1=(X=2, Z=5, L=7)
+    item2=(X=6, Y=5, M=7)
+
+The HD problems involves a high cost computation because distance functions in this case takes more
+operations than Low dimensionality problems.
+
+For case "b" (valid also for "a"), a new distance for HD problems is available:  HDdistItems() ,HDequals()
+This distance function compares dimensions between 2 items.
+Each dimension of item1 is searched in item2, and if it is found, then the distance takes into account the difference (mahatan style)
+if the dimension does not exist in item2, a maximum value is added to the total distance between item1 and item2
+
+there is no difference with current usage:
+ 
+ >>>cl = KMeansClustering(users,HDdistItems,HDequals);
+
+
+Additionally, now the number of iterations can be limited in order to save time
+Experimentally, we have concluded that 10 iterations is  enough accurate for most cases.
+The new HDgetClusters() function is linear. Avoid the recalculation of centroids
+whereas original function getClusters() is N*N complex, because recalculate the
+centroid when move an item from one cluster to another. 
+This new function can be used for low and high dimensionality problems, increasing 
+performance in both cases
+
+ >>>solution = cl.HDgetclusters(numclusters,max_iterations);
+
+Other new available optimization inside HDcentroid() function in is the use of mean instead median at centroid calculation.
+median is more accurate but involves more computations when N is huge. 
+The function HDcentroid() is invoked internally by HDgetclusters()
+
