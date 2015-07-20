@@ -1,17 +1,9 @@
 # -*- coding: cp1252 -*-
-#from cluster import KMeansClustering
-from cluster import KMeansClustering
-from cluster import ClusteringError
-from cluster import util
-from cluster.util import HDcentroid
-from cluster.HDdistances import HDdistItems, HDequals, HDcomputeSSE
-import time
-import datetime
-
-import random
-
 ###############################################################################
-#                     High Dimensionality problem example                     #
+#             High Dimensionality problem example                     
+# Authors:
+#  2015 Jose Javier Garcia Aranda , Juan Ramos Diaz
+#
 ###############################################################################
 # This High Dimensionality example creates N items (which are "users").
 # Each user is defined by his profile. 
@@ -43,8 +35,16 @@ import random
 #
 # The optional invocation of HDcomputeSSE() assist the computation of the optimal number or clusters.
 #
+#
+from cluster import KMeansClustering
+from cluster import ClusteringError
+from cluster import util
+from cluster.util import HDcentroid
+from cluster.HDdistances import HDdistItems, HDequals, HDcomputeSSE
+import time
+import datetime
 
-
+import random
 
 def createProfile():
     num_words=1000
@@ -92,60 +92,40 @@ def createProfile():
 ####################################################
 #                    MAIN                          #
 ####################################################
-sses=[0]*10 # stores the sse metric for each number of clusters from 5 to 50
-num_users=1000
+sses=[0]*10 #stores the sse metric for each number of clusters from 5 to 50
+num_users=100
 numsse=0
 numclusters=5 # starts at 5
-max_iteraciones=10 # for efficiency we limit the number of kmeans iterations
+max_iteraciones=10
 ts = time.time()
 start_time=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-while numclusters<=25:
-    supersol=0#supersolucion, dist between clusters centroids and items.
-    
-    usuarios=[]
+while numclusters<=50: # compute SSE from num_clusters=5 to 50
+    supersol=0#supersolucion, distancias entre el clusters y los usuarios.
+    users=[] # users are the items of this example
     for i in range(num_users):#en el range el numero de usuarios
-        usuario = createProfile()
-        #print usuario
-        #print i
-        usuarios.append(usuario)
-        #print distUsers(usuarios[0],usuario)
-        #numclusters=6 #linea para pruebas
-        
-    #print distUsers(usuarios[0],usuarios[1])
-    #print usuarios
-    x=0;
-    print " initializing cluster..."
-        
-    cl = KMeansClustering(usuarios,HDdistItems,HDequals);
-    print " clusterizando...",numclusters
+        user = createProfile()
+        users.append(user)
+    #x=0;
+    print " inicializing kmeans..."
+    cl = KMeansClustering(users,HDdistItems,HDequals);
+    print " executing...",numclusters
     ts = time.time()
     st=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     print st
     numclusters=numclusters
-    solucion = cl.HDgetclusters(numclusters,max_iteraciones);
-    #print x
-    #print "--------------------------------------------";
-    
-    #print  solucion[0];
+    solution = cl.HDgetclusters(numclusters,max_iteraciones);
     for i in range(numclusters):
-        #print "====="+str(i);
-        a = solucion[i]
+        a = solution[i]
         print util.HDcentroid(a),","
     ts = time.time()
     st=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    #print st
-    #supersol += HDcomputeSSE(solucion,numclusters)
-   
-    sses[numsse]=supersol
+    
+    sses[numsse]=HDcomputeSSE(solution,numclusters) 
     numsse+=1
     numclusters+=5
 ts = time.time()
-horafin=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-print "inicio:",horainicio
-print "fin:",horafin
+end_time=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+print "start_time:",start_time
+print "end_time:",end_time
 print "sses:",sses
-f=open("resul2.txt","w")
-f.write("sses:")
-f.write(str(sses))
-f.write("\n")
-f.close()
+
