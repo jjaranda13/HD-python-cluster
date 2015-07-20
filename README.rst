@@ -59,9 +59,8 @@ The parameter passed to getclusters is the count of clusters generated.
 2015/07/20 NEW FUNCTIONALITIES FOR HIGH AND LOW DIMENSIONALITY PROBLEMS
 =======================================================================
 Authors of new added functionalities:
-  Garcia Aranda, Jose Javier	jose_javier.garcia_aranda@alcatel-lucent.com
-  
-  Ramos Diaz, Juan		juanrd0088@gmail.com
+  - Garcia Aranda, Jose Javier	jose_javier.garcia_aranda@alcatel-lucent.com
+  - Ramos Diaz, Juan		juanrd0088@gmail.com
 
 Acknoledgements:
   Authors want to thank the Spanish Economy & competitiveness Ministry which funds this research 
@@ -81,10 +80,9 @@ operations than Low dimensionality problems.
 
 For case "b" (valid also for "a"), a new distance for HD problems is available:  HDdistItems() ,HDequals()
 This distance function compares dimensions between 2 items.
-Each dimension of item1 is searched in item2, and if it is found, then the distance takes into account the difference (mahatan style)
-if the dimension does not exist in item2, a maximum value is added to the total distance between item1 and item2
+Each dimension of item1 is searched in item2, and if it is found, then the distance takes into account the difference (manhattan style). If the dimension does not exist in item2, a maximum value is added to the total distance between item1 and item2
 
-there is no difference with current usage::
+There is no difference with current usage::
  
  >>>cl = KMeansClustering(users,HDdistItems,HDequals);
 
