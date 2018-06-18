@@ -19,6 +19,7 @@
 
 from __future__ import print_function
 import logging
+from HDdistances import HD_profile_dimensions
 
 
 logger = logging.getLogger(__name__)
@@ -136,11 +137,10 @@ def centroid(data, method=median):
 def HDcentroid(data):
     dict_words={}
     dict_weight={}
-    words_per_user=10 #10 words per user. This value is not used.
-    num_users_cluster=len(data)# len(data) is the number of users (user=item)
+    num_users_cluster=len(data)# len(data) is the number of items
 
     for i in range (num_users_cluster):
-        words_per_user=len(data[i])/2 #each profile have 10 pairs of keyword, weight
+        words_per_user=len(data[i])/2 #each profile have pairs of keywords, weight
         for j in range (words_per_user):
             word=(data[i])[j*2]
             if (dict_words.has_key(word)) :
@@ -149,11 +149,13 @@ def HDcentroid(data):
             else :
                 dict_words[word]=1
                 dict_weight[word]=data[i][2*j+1]
-    #l is a ordered list of the keywords, with the sum of the weight of every popular keyword
+    #l is a non-ordered list of the keywords, with the sum of the weight of every popular keyword
     l=dict_words.items()
+    #l is going to be converted into an ordered list of the keywords by popularity
+    # this sort() invocation works if the number of dimensions is less than 10000000
     l.sort(key=lambda x:10000000-x[1])
-
-    words_per_centroid=min(10,len(l))
+    
+    words_per_centroid=min(HD_profile_dimensions,len(l))
     
     out=[0]*words_per_centroid*2
     centroid_total_weight=0

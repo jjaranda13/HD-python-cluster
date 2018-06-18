@@ -205,31 +205,26 @@ class KMeansClustering(object):
                             # is the case
 
         iteration=0
-        #asi no, no obligar a hacer iteraciones, lo hago segun dice el algoritmo
-        #pero si llego a iteraciones paro, si termino antes de llegar, mejor
+        
+        #The number of iterations is limited to max_iterations. When this limit is reached, the items_moved is forced to false
         while items_moved is True:
             items_moved = False
-            print "iterating",iteration
-            ts = time.time()
-            st=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-            print st
+            #print "iterating",iteration # for debug purposes
+            st=datetime.datetime.now()
+            # print st # for debug purposes
             iteration=iteration+1
 
             #computation of centroids
             my_centroids={}   # new!!     
-            for cluster in self.__clusters:# new!! 
-                one_centroid=HDcentroid(cluster)# new!!
-                my_centroids[one_centroid]=cluster # new!!
+            for cluster in self.__clusters: 
+                one_centroid=HDcentroid(cluster)
+                my_centroids[one_centroid]=cluster 
 
-            
-
-
-            #this few lines are new:    
             #print centroids . it works, for debug purposes only!!
             #for i in my_centroids.keys():
             #    print "key:",i # print the centroid!!
             #    print "value:",my_centroids[i] # print all elements of the cluster!!
-            #print my_centroids.keys()[0] # imprime el primer centroide. es una prueba
+            #print my_centroids.keys()[0] # print the fist centroid. for testing
 
             #now we scan the N items without recalculation of centroids. Therefore, it is linear
             for cluster in self.__clusters:
@@ -238,7 +233,7 @@ class KMeansClustering(object):
                         centroid_cluster=centroid_aux
                         break;
                 for item in cluster:
-                    res = self.HDassign_item(item, cluster,centroid_cluster,my_centroids)#modified!!
+                    res = self.HDassign_item(item, cluster,centroid_cluster,my_centroids)
                     if items_moved is False:
                         items_moved = res
 
@@ -256,15 +251,15 @@ class KMeansClustering(object):
         :param origin_centroid: centroid of the originating cluster
         :my_centroids: dictionary of centroid,cluster
         """
-        closest_cluster=origin #my_centroids[closest_centroid]=closest_cluster
+        closest_cluster=origin 
         closest_centroid=origin_centroid
-        #for cluster in self.__clusters:
-        for centro in my_centroids.keys():
-            if self.distance(item, centro) < self.distance(
+        
+        for center in my_centroids.keys():
+            if self.distance(item, center) < self.distance(
                     item, closest_centroid):
-                closest_cluster = my_centroids[centro]
+                closest_cluster = my_centroids[center]
 
-        if id(closest_cluster) != id(origin):
+        if closest_cluster is not origin:
             self.move_item(item, origin, closest_cluster)
             return True
         else:

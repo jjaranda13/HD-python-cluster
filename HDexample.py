@@ -36,17 +36,19 @@
 # The optional invocation of HDcomputeSSE() assist the computation of the optimal number or clusters.
 #
 #
+from __future__ import print_function
 from cluster import KMeansClustering
 from cluster import ClusteringError
 from cluster import util
 from cluster.util import HDcentroid
-from cluster.HDdistances import HDdistItems, HDequals, HDcomputeSSE
+from cluster.HDdistances import HDdistItems, HDequals, HDcomputeSSE, HD_profile_dimensions
+
 import time
 import datetime
-
 import random
 
 def createProfile():
+    """create a profile composed of 10 dimensions chosen from 1000 dimensions"""
     num_words=1000
     total_weight=0;
     marked_word=[0]*num_words
@@ -55,6 +57,7 @@ def createProfile():
     returned_profile=();
     profile_aux=[];
     #10 pairs word, weight.
+    HD_profile_dimensions=10
     #Don't repeated words.
     for i in range(8):
         partial_weight=random.uniform(0,1)
@@ -96,36 +99,30 @@ sses=[0]*10 #stores the sse metric for each number of clusters from 5 to 50
 num_users=100
 numsse=0
 numclusters=5 # starts at 5
-max_iteraciones=10
-ts = time.time()
-start_time=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+max_iterations=10
+start_time=datetime.datetime.now()
 while numclusters<=50: # compute SSE from num_clusters=5 to 50
-    supersol=0#supersolucion, distancias entre el clusters y los usuarios.
     users=[] # users are the items of this example
-    for i in range(num_users):#en el range el numero de usuarios
+    for i in range(num_users):
         user = createProfile()
         users.append(user)
-    #x=0;
-    print " inicializing kmeans..."
+    print (" inicializing kmeans...")
     cl = KMeansClustering(users,HDdistItems,HDequals);
-    print " executing...",numclusters
-    ts = time.time()
-    st=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    print st
+    print (" executing...",numclusters)
+    st=datetime.datetime.now()
+    print (st)
     numclusters=numclusters
-    solution = cl.HDgetclusters(numclusters,max_iteraciones);
+    solution = cl.HDgetclusters(numclusters,max_iterations);
     for i in range(numclusters):
         a = solution[i]
-        print util.HDcentroid(a),","
-    ts = time.time()
-    st=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    
+        print (util.HDcentroid(a),",")
+    st=datetime.datetime.now()
+
     sses[numsse]=HDcomputeSSE(solution,numclusters) 
     numsse+=1
     numclusters+=5
-ts = time.time()
-end_time=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-print "start_time:",start_time
-print "end_time:",end_time
-print "sses:",sses
+end_time=datetime.datetime.now()
+print ("start_time:",start_time)
+print ("end_time:",end_time)
+print ("sses:",sses)
 

@@ -59,24 +59,21 @@ The parameter passed to getclusters is the count of clusters generated.
 2015/07/20 NEW FUNCTIONALITIES FOR HIGH AND LOW DIMENSIONALITY PROBLEMS
 =======================================================================
 Authors of new added functionalities:
-  - Garcia Aranda, Jose Javier	jose_javier.garcia_aranda@alcatel-lucent.com
+  - Garcia Aranda, Jose Javier	jjaranda13@gmail.com
   - Ramos Diaz, Juan		juanrd0088@gmail.com
 
 Acknoledgements:
-  Authors want to thank the Spanish Economy & competitiveness Ministry which funds this research 
-  through "INNPACTO" innovation program IPT-2012-0839-430000.
-
+  Authors want to thank the Spanish Economy & competitiveness Ministry which funds this research through "INNPACTO" innovation program IPT-2012-0839-430000.
 
 High dimensionality (HD) problems are those which have items with high number of dimensions
-There are two types of HD problems::
+There are two types of HD problems:
  a)set of items with large number of dimensions.
- b)set of items with a limited number of dimensions from a large available number of dimensions
-  For example considering dimensions X, Y, Z, K, L, M and the items:
+ b)set of items with a limited number of dimensions from a large available number of dimensions::
+  For example considering dimensions X, Y, Z, K, L, M and the items
     item1=(X=2, Z=5, L=7)
     item2=(X=6, Y=5, M=7)
 
-The HD problems involves a high cost computation because distance functions in this case takes more
-operations than Low dimensionality problems.
+The HD problems involves a high cost computation because distance functions in this case takes more operations than Low dimensionality problems.
 
 For case "b" (valid also for "a"), a new distance for HD problems is available:  HDdistItems() ,HDequals()
 This distance function compares dimensions between 2 items.
