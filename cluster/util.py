@@ -19,7 +19,7 @@
 
 from __future__ import print_function
 import logging
-from HDdistances import HD_profile_dimensions
+from .HDdistances import HD_profile_dimensions
 
 
 logger = logging.getLogger(__name__)
